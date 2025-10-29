@@ -54,6 +54,7 @@ eda_reports_complete/
 left_imag/eda_reports/
 right_imag/eda_reports/
 reports/
+shared_data/
 
 # Python packaging
 build/
