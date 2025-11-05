@@ -41,20 +41,52 @@ ENV/
 ehthumbs.db
 Thumbs.db
 
-# Project specific
+# Datos y archivos grandes (PERO left_imag/ y right_imag/ SÍ se incluyen)
+# Ignorar estos tipos de archivos globalmente...
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.mat
+*.csv
+*.txt
 *.png
 *.jpg
 *.jpeg
 *.gif
 *.pdf
-*.csv
-*.txt
+*.zip
+*.tar
+*.tar.gz
+*.gz
+
+# ...EXCEPTO en left_imag/ y right_imag/ (archivos .set y .fdt son necesarios)
+!left_imag/
+!right_imag/
+!left_imag/**/*.set
+!left_imag/**/*.fdt
+!right_imag/**/*.set
+!right_imag/**/*.fdt
+
+# Ignorar .set y .fdt en otros lugares
+*.set
+*.fdt
+
+# Pero NO ignorar en left_imag/ y right_imag/
+!left_imag/
+!right_imag/
+
+# Directorios de datos y resultados generados (NOTA: left_imag/ y right_imag/ NO se ignoran)
+data/
+results/
 eda_reports/
 eda_reports_complete/
-left_imag/eda_reports/
-right_imag/eda_reports/
 reports/
+wavelet_reports/
 shared_data/
+bof_data/
 
 # Python packaging
 build/
@@ -68,6 +100,7 @@ dmypy.json
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*.ipynb_checkpoints/
 
 # pyenv
 .python-version
@@ -93,3 +126,14 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Modelos y checkpoints
+*.pth
+*.pt
+*.ckpt
+*.model
+*.weights
+
+# Logs
+*.log
+logs/

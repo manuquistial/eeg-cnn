@@ -1,393 +1,331 @@
-# Análisis de Datos MI-EEG con Wavelets (Notebooks)
+# Clasificación de Señales EEG de Imaginación Motora: Bag of Features vs. Deep Learning
 
-Este proyecto analiza datos de interfaz cerebro-computadora (BCI) de imaginación motora (MI) usando EEGLAB, implementando análisis exploratorio y transformadas wavelet mediante notebooks de Jupyter. El proyecto está completamente preparado para la implementación de Bag of Features con datos optimizados.
+Este proyecto implementa y compara dos enfoques metodológicos para la clasificación de señales de electroencefalografía (EEG) durante tareas de imaginación motora (MI): un modelo basado en **Bag of Features (BoF) combinado con SVM** y una arquitectura de **Red Neuronal Convolucional (DeepConvNet)**.
 
-## Estructura del Proyecto
+## 📋 Descripción del Proyecto
+
+El objetivo principal es clasificar señales EEG en dos clases: **imaginación de movimiento de mano izquierda (MI-L)** y **imaginación de movimiento de mano derecha (MI-R)**. Se utilizan datos de 20 sujetos sanos, cada uno con 22 ensayos por tarea (880 ensayos totales), registrados mediante 64 electrodos con una frecuencia de muestreo de 128 Hz.
+
+### Enfoques Implementados
+
+1. **BoF-SVM**: Extracción de características mediante transformadas wavelet (CWT y DWT), representación mediante Bag of Features, y clasificación con Máquinas de Vectores de Soporte (SVM).
+2. **DeepConvNet**: Arquitectura de red neuronal convolucional profunda que aprende representaciones directamente de las señales EEG preprocesadas.
+
+### Resultados Principales
+
+- **BoF-SVM**: Accuracy: 52.84%, F1-Score: 0.5451
+- **DeepConvNet**: Accuracy: 47.16%, F1-Score: 0.4677
+
+El modelo BoF-SVM demostró un mejor desempeño en todas las métricas evaluadas.
+
+## 🏗️ Estructura del Proyecto
 
 ```
 datos_BCI/
-├── 01_EDA_Analysis.ipynb           # Notebook: Análisis exploratorio (PSD, correlación)
-├── 02_Wavelet_Analysis.ipynb       # Notebook: Análisis de wavelets (CWT y DWT)
-├── bof_template.py                 # Template para implementar Bag of Features
-├── left_imag/                      # Datos de imaginación motora mano izquierda (20 archivos)
-├── right_imag/                     # Datos de imaginación motora mano derecha (20 archivos)
-├── venv/                           # Entorno virtual Python
-├── pyproject.toml                  # Configuración del proyecto y dependencias
-├── README.md                       # Este archivo
-├── shared_data/                    # Datos compartidos entre notebooks
-│   ├── X_data.npy                  # Datos concatenados (trials, channels, time)
-│   ├── ch_names.npy                # Nombres de canales
-│   ├── sfreq.npy                   # Frecuencia de muestreo
-│   ├── data_dimensions.npy         # Dimensiones de los datos
-│   ├── subjects_info.csv           # Información de sujetos
-│   ├── region_info.json            # Información de regiones cerebrales
-│   └── config_params.json          # Parámetros de configuración
-├── bof_data/                       # Datos específicos para Bag of Features
-│   ├── X_bof_features.npy          # Características normalizadas para BoF
-│   ├── y_labels.npy                # Etiquetas de clase (0=left, 1=right)
-│   ├── bof_feature_names.txt       # Nombres de características seleccionadas
-│   ├── scaler_bof.pkl              # Normalizador entrenado para BoF
-│   ├── bof_metadata.json           # Metadatos completos del dataset
-│   ├── bof_config.json             # Configuración y parámetros recomendados
-│   ├── trial_to_subject.npy        # Mapeo de trials a sujetos
-│   └── trial_to_task.npy           # Mapeo de trials a tareas
-├── reports/                        # Directorio de salida EDA
-│   ├── psd_avg.png                 # PSD promedio con bandas μ/β
-│   ├── corr_heatmap.png            # Mapa de calor de correlación
-│   ├── psd_bandpower_per_channel.csv # Potencia por banda y canal
-│   └── corr_region_summary.txt     # Resumen de correlaciones por región
-└── wavelet_reports/                # Directorio de salida wavelets (generado por notebook)
-    ├── wavelet_features.npy        # Características normalizadas para BoF
-    ├── feature_names.txt           # Nombres de características
-    ├── channel_info.csv            # Información de canales y regiones
-    ├── subjects_info.csv           # Información de sujetos y tareas
-    └── wavelet_config.json         # Parámetros de configuración wavelets
+├── Notebooks de Análisis
+│   ├── 01_EDA_Analysis.ipynb           # Análisis exploratorio (PSD, correlación)
+│   ├── 02_Wavelet_Analysis.ipynb       # Extracción de características wavelet
+│   ├── 03_BoF_Clasificacion.ipynb      # Modelo Bag of Features + SVM
+│   └── 05_DeepConvNet_CNN.ipynb        # Modelo DeepConvNet (CNN)
+│
+├── Datos de Entrada
+│   ├── left_imag/                      # 20 archivos .set/.fdt (mano izquierda)
+│   └── right_imag/                     # 20 archivos .set/.fdt (mano derecha)
+│
+├── Datos Procesados (generados por los notebooks)
+│   ├── data/
+│   │   ├── preprocessed/               # Datos preprocesados
+│   │   └── bof_features/               # Características para BoF
+│   └── results/
+│       ├── eda/                        # Resultados análisis exploratorio
+│       ├── wavelets/                   # Resultados análisis wavelet
+│       ├── bof_svm/                    # Resultados BoF-SVM
+│       ├── deepconvnet/                # Resultados DeepConvNet
+│       └── figures/                    # Gráficas para el artículo
+│
+├── Documentación
+│   ├── README.md                       # Este archivo
+│   ├── articulo.md                     # Artículo científico en LaTeX
+│   ├── pyproject.toml                  # Dependencias del proyecto
+│   └── venv/                           # Entorno virtual Python
+│
+└── Archivos de Configuración
+    └── .gitignore
 ```
 
-## Configuración del Entorno
+## 🚀 Inicio Rápido
 
-### Opción 1: Usando el entorno virtual (Recomendado)
+### Requisitos Previos
+
+- Python 3.8 o superior
+- pip (gestor de paquetes de Python)
+- Jupyter Notebook o Jupyter Lab
+
+### Instalación
+
+#### Opción 1: Usar el entorno virtual existente (Recomendado)
+
 ```bash
-# Activar entorno virtual existente
-source venv/bin/activate
+# Clonar o descargar el proyecto
+cd datos_BCI
+
+# Activar el entorno virtual
+source venv/bin/activate  # En macOS/Linux
+# O: venv\Scripts\activate  # En Windows
 
 # Las dependencias ya están instaladas
 ```
 
-### Opción 2: Instalación manual
-```bash
-# Instalar dependencias principales
-pip install mne PyWavelets scikit-learn matplotlib pandas numpy scipy tqdm
+#### Opción 2: Crear un entorno virtual nuevo
 
-# O usar pyproject.toml
-pip install -e .
-```
-
-### Opción 3: Desde los notebooks
-Si ejecutas los notebooks en un entorno nuevo, ejecuta la **primera celda** de cada notebook que contiene la instalación automática:
-
-**Celda 1 - Instalación de dependencias:**
-```python
-# Celda de instalación de dependencias
-# Ejecutar esta celda SOLO si necesitas instalar las librerías en un entorno nuevo
-
-%pip install mne
-%pip install PyWavelets
-%pip install scikit-learn
-%pip install matplotlib
-%pip install pandas
-%pip install numpy
-%pip install scipy
-%pip install tqdm
-
-print("Instalación de dependencias completada")
-```
-
-**Celda 2 - Importación de librerías:**
-```python
-# Importar librerías necesarias
-import os
-import re
-# ... resto de imports
-```
-
-### Crear entorno virtual nuevo (si es necesario)
 ```bash
 # Crear entorno virtual
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # macOS/Linux
+# O: venv\Scripts\activate  # Windows
 
 # Instalar dependencias
 pip install -e .
+
+# O instalar manualmente:
+pip install mne>=1.5.0 PyWavelets>=1.4.0 scikit-learn>=1.3.0 \
+            matplotlib>=3.7.0 pandas>=2.0.0 numpy>=1.24.0 \
+            scipy>=1.11.0 tqdm>=4.65.0 torch>=2.0.0
 ```
 
-## Configuración del Proyecto
+#### Opción 3: Instalación desde notebooks
 
-Este proyecto utiliza `pyproject.toml` para la gestión de dependencias y configuración, siguiendo las mejores prácticas modernas de Python.
+Si ejecutas los notebooks en un entorno nuevo, ejecuta la **primera celda** de cada notebook que instala las dependencias automáticamente.
 
-### Dependencias principales:
-- `mne>=1.5.0`: Para procesamiento de señales EEG
-- `scipy>=1.11.0`: Operaciones científicas
-- `numpy>=1.24.0`: Arrays numéricos
-- `matplotlib>=3.7.0`: Visualización
-- `seaborn>=0.12.0`: Visualización estadística
-- `pandas>=2.0.0`: Manipulación de datos
-- `tqdm>=4.65.0`: Barras de progreso
-- `PyWavelets>=1.4.0`: Transformadas wavelet
-- `scikit-learn>=1.3.0`: Machine learning y clustering
+### Ejecución del Pipeline Completo
 
-### Dependencias de desarrollo (opcionales):
-- `pytest>=7.0.0`: Testing
-- `black>=22.0.0`: Formateador de código
-- `flake8>=4.0.0`: Linter
-- `mypy>=0.950`: Verificación de tipos
-
-### Ventajas de pyproject.toml:
-- ✅ **Estándar moderno**: PEP 518/621 compliant
-- ✅ **Metadatos completos**: Información del proyecto, autores, descripción
-- ✅ **Herramientas integradas**: Configuración para Black, MyPy, etc.
-- ✅ **Gestión de dependencias**: Dependencias principales y opcionales
-- ✅ **Instalación editable**: `pip install -e .` para desarrollo
-- ✅ **Estructura simplificada**: Fácil de mantener y usar
-
-## Análisis Realizado
-
-### 1. Análisis Exploratorio de Datos (EDA) - `eda.py`
-
-El script `eda.py` realiza un análisis espectral y de correlación que incluye:
-
-1. **Análisis espectral (PSD)**: 
-   - Densidad espectral de potencia en 8-30 Hz
-   - Análisis de bandas μ (10-12 Hz) y β (18-26 Hz)
-   - Picos por canal en cada banda
-
-2. **Correlación intercanal**:
-   - Mapa de calor de correlación entre canales
-   - Resumen por regiones cerebrales (Frontal, Central, Parietal, Occipital)
-
-3. **Resultados** (guardados en `reports/`):
-   - `psd_avg.png`: PSD promedio con bandas μ/β sombreadas
-   - `corr_heatmap.png`: Mapa de calor de correlación intercanal
-   - `psd_bandpower_per_channel.csv`: Potencia media por banda y picos por canal
-   - `corr_region_summary.txt`: Resumen de correlaciones por regiones
-
-### 2. Análisis de Wavelets - `wavelet_analysis.py`
-
-El script `wavelet_analysis.py` implementa análisis avanzado de wavelets:
-
-1. **Transformada Wavelet Continua (CWT)**:
-   - Análisis tiempo-frecuencia usando wavelet de Morlet
-   - Escalas logarítmicas para cobertura completa del espectro
-   - Extracción de características por bandas de frecuencia
-
-2. **Transformada Wavelet Discreta (DWT)**:
-   - Descomposición multiresolución usando Daubechies 4
-   - Análisis por niveles de descomposición
-   - Características estadísticas por nivel
-
-3. **Características extraídas**:
-   - Energía por banda de frecuencia (delta, theta, alpha, beta, gamma)
-   - Potencia máxima por escala
-   - Frecuencia dominante
-   - Entropía espectral
-   - Estadísticas por nivel DWT
-
-4. **Resultados** (guardados en `wavelet_reports/`):
-   - `wavelet_features.csv`: Características extraídas para BoF
-   - `wavelet_spectrogram.png`: Espectrograma wavelet promedio
-   - `wavelet_energy_distribution.png`: Distribución de energía por escalas
-   - `wavelet_cwt_coefficients.npy`: Coeficientes CWT completos (opcional)
-   - `wavelet_dwt_coefficients.npy`: Coeficientes DWT completos (opcional)
-
-## Próximos Pasos: Implementación de Bag of Features (BoF)
-
-El proyecto está preparado para implementar Bag of Features como siguiente paso. Las características wavelet extraídas están listas para ser utilizadas en el pipeline BoF.
-
-### Archivos Preparados para BoF
-
-El análisis de wavelets genera los siguientes archivos que serán utilizados por BoF:
-
-- **`wavelet_reports/wavelet_features.csv`**: Características extraídas por trial y canal
-- **`wavelet_reports/wavelet_features_matrix.npy`**: Matriz de características en formato numpy
-- **`wavelet_reports/channel_info.csv`**: Información de canales EEG
-
-### Implementación Sugerida de BoF
-
-Para implementar Bag of Features, se recomienda crear un script `bof_classification.py` que incluya:
-
-1. **Construcción del vocabulario visual**:
-   - Cargar características desde `wavelet_features.csv`
-   - Aplicar clustering K-means para crear vocabulario visual
-   - Normalizar características antes del clustering
-
-2. **Codificación de características**:
-   - Convertir características a histogramas de palabras visuales
-   - Normalizar histogramas para clasificación
-   - Preparar datos para entrenamiento/test
-
-3. **Clasificación**:
-   - Implementar múltiples algoritmos (SVM, Random Forest, Logistic Regression)
-   - División train/test estratificada
-   - Validación cruzada opcional
-
-4. **Evaluación**:
-   - Métricas: accuracy, precision, recall, F1-score, AUC
-   - Matrices de confusión
-   - Curvas ROC
-   - Importancia de características
-
-5. **Visualización**:
-   - PCA para visualización de histogramas BoF
-   - Distribución de palabras visuales
-   - Comparación de rendimiento entre algoritmos
-
-### Template de Implementación
-
-Se incluye un archivo template `bof_template.py` que muestra la estructura completa para implementar BoF:
-
-```bash
-# Copiar template y completar implementación
-cp bof_template.py bof_classification.py
-
-# Editar bof_classification.py para completar las funciones marcadas con TODO
-# Ejecutar implementación
-python bof_classification.py
-```
-
-El template incluye:
-- Clase `BagOfFeatures` con métodos para vocabulario y codificación
-- Funciones para carga de características wavelet
-- Pipeline de entrenamiento y evaluación
-- Estructura para múltiples clasificadores (SVM, Random Forest, Logistic Regression)
-- Marcadores TODO para guiar la implementación
-
-### Estructura del Template
-
-```python
-# bof_template.py
-class BagOfFeatures:
-    def __init__(self, vocab_size=50):
-        # TODO: Inicializar componentes
-    
-    def build_vocabulary(self, features):
-        # TODO: Implementar clustering K-means
-    
-    def encode_features(self, features):
-        # TODO: Convertir a histogramas BoF
-
-def load_wavelet_features(features_file):
-    # TODO: Cargar características desde CSV
-
-def train_classifiers(X_train, y_train):
-    # TODO: Entrenar múltiples clasificadores
-
-def evaluate_classifiers(classifiers, X_test, y_test):
-    # TODO: Evaluar y visualizar resultados
-```
-
-## Configuración del Análisis
-
-El análisis está configurado para:
-- **Bandas de frecuencia**: 8-30 Hz (filtro μ/β)
-- **Banda μ**: 10-12 Hz
-- **Banda β**: 18-26 Hz
-- **Ventana de trial**: 9 segundos por defecto
-- **Método PSD**: Welch con segmentos de 2 segundos y 50% overlap
-
-## Uso
-
-### Ejecutar Notebooks
-
-#### 1. Análisis Exploratorio (EDA)
-```bash
-# Activar entorno virtual
-source venv/bin/activate
-
-# Ejecutar notebook de EDA
-jupyter notebook 01_EDA_Analysis.ipynb
-
-# O ejecutar directamente
-jupyter nbconvert --to notebook --execute 01_EDA_Analysis.ipynb
-```
-
-#### 2. Análisis de Wavelets
-```bash
-# Ejecutar notebook de wavelets
-jupyter notebook 02_Wavelet_Analysis.ipynb
-
-# O ejecutar directamente
-jupyter nbconvert --to notebook --execute 02_Wavelet_Analysis.ipynb
-```
-
-### Pipeline Recomendado
+El proyecto sigue un pipeline secuencial. **Es importante ejecutar los notebooks en orden**:
 
 ```bash
 # 1. Activar entorno virtual
 source venv/bin/activate
 
-# 2. Ejecutar análisis exploratorio (genera datos compartidos)
-jupyter nbconvert --to notebook --execute 01_EDA_Analysis.ipynb
+# 2. Iniciar Jupyter
+jupyter notebook
+# O: jupyter lab
 
-# 3. Ejecutar análisis de wavelets (usa datos del EDA)
-jupyter nbconvert --to notebook --execute 02_Wavelet_Analysis.ipynb
-
-# 4. Implementar Bag of Features
-# Los archivos en bof_data/ están listos para implementar BoF
+# 3. Ejecutar notebooks en orden:
+#    a) 01_EDA_Analysis.ipynb
+#    b) 02_Wavelet_Analysis.ipynb
+#    c) 03_BoF_Clasificacion.ipynb
+#    d) 05_DeepConvNet_CNN.ipynb
 ```
 
-**Nota importante**: 
-- El notebook de wavelets depende de los datos generados por el EDA
-- Siempre ejecuta primero `01_EDA_Analysis.ipynb` para generar el directorio `shared_data/`
-- Los datos específicos para BoF se generan en `bof_data/` después de ejecutar el análisis de wavelets
-
-### Desarrollo Interactivo
+#### Ejecución Automatizada (sin interfaz gráfica)
 
 ```bash
-# Iniciar Jupyter Lab para desarrollo interactivo
-source venv/bin/activate
-jupyter lab
-
-# O Jupyter Notebook clásico
-jupyter notebook
+# Ejecutar todos los notebooks en orden
+jupyter nbconvert --to notebook --execute 01_EDA_Analysis.ipynb
+jupyter nbconvert --to notebook --execute 02_Wavelet_Analysis.ipynb
+jupyter nbconvert --to notebook --execute 03_BoF_Clasificacion.ipynb
+jupyter nbconvert --to notebook --execute 04_DeepConvNet_CNN.ipynb
 ```
 
-## Datos
+## 📚 Descripción Detallada de los Notebooks
 
-- **left_imag/**: 20 archivos .set/.fdt con datos de imaginación motora mano izquierda
-- **right_imag/**: 20 archivos .set/.fdt con datos de imaginación motora mano derecha
-- Cada archivo corresponde a un sujeto (S001-S020)
-- Los archivos están en formato EEGLAB (.set/.fdt)
+### 1. Análisis Exploratorio (EDA) - `01_EDA_Analysis.ipynb`
 
-## Estado Actual del Proyecto
+**Objetivo**: Analizar las características básicas de los datos EEG y verificar su calidad.
 
-### ✅ Implementado
+**Qué hace**:
+- Carga los archivos .set/.fdt desde `left_imag/` y `right_imag/`
+- Calcula la Densidad Espectral de Potencia (PSD) usando el método de Welch
+- Analiza las bandas de frecuencia μ (10-12 Hz) y β (18-26 Hz)
+- Calcula correlaciones intercanales
+- Genera visualizaciones y reportes
 
-1. **Análisis Exploratorio de Datos (EDA)** - `01_EDA_Analysis.ipynb`
-   - Análisis espectral (PSD) con bandas μ/β
-   - Correlación intercanal
-   - Visualizaciones y reportes
-   - Generación de datos compartidos
-   - ✅ **Completado**
+**Salidas** (en `results/eda/`):
+- `psd_avg.png`: Gráfico de PSD promedio
+- `corr_heatmap.png`: Mapa de calor de correlaciones
+- `psd_bandpower_per_channel.csv`: Potencia por banda y canal
 
-2. **Análisis de Wavelets** - `02_Wavelet_Analysis.ipynb`
-   - Transformada Wavelet Continua (CWT) con Morlet
-   - Transformada Wavelet Discreta (DWT) con Daubechies 4
-   - Extracción de características por bandas de frecuencia
-   - Preparación específica de datos para BoF
-   - ✅ **Completado**
+**Tiempo estimado**: 5-10 minutos
 
-3. **Preparación Completa para BoF**
-   - Template completo en `bof_template.py`
-   - Datos específicos optimizados en `bof_data/`
-   - Características seleccionadas y normalizadas
-   - Etiquetas de clase y metadatos completos
-   - ✅ **Listo para implementar**
+### 2. Análisis de Wavelets - `02_Wavelet_Analysis.ipynb`
 
-### 🔄 Próximo Paso: Bag of Features
+**Objetivo**: Extraer características tiempo-frecuencia usando transformadas wavelet.
 
-El proyecto está completamente preparado para implementar Bag of Features. Los archivos generados por el análisis de wavelets contienen todas las características necesarias:
+**Qué hace**:
+- Aplica **Transformada Wavelet Continua (CWT)** con wavelet Morlet compleja
+- Aplica **Transformada Wavelet Discreta (DWT)** con wavelet Daubechies 4
+- Extrae características por canal:
+  - Energía en bandas alfa y beta
+  - Frecuencia dominante
+  - Entropía espectral
+  - Estadísticas de coeficientes DWT
+- Genera un descriptor de 9 dimensiones por canal
 
-- **Características CWT**: Energía por banda, frecuencia dominante, entropía espectral
-- **Características DWT**: Energía y estadísticas por nivel de descomposición
-- **Formato preparado**: CSV con características por trial y canal, matriz numpy para procesamiento eficiente
+**Salidas** (en `data/bof_features/` y `results/wavelets/`):
+- `X_bof_features.npy`: Matriz de características (880 ensayos × 64 canales × 9 descriptores)
+- `y_labels.npy`: Etiquetas de clase (0=left, 1=right)
+- `trial_to_subject.npy`: Mapeo de ensayos a sujetos
+- `bof_metadata.json`: Metadatos del dataset
 
-### 📋 Archivos Listos para BoF
+**Tiempo estimado**: 15-30 minutos
 
-Después de ejecutar `python wavelet_analysis.py`, tendrás:
+### 3. Clasificación BoF-SVM - `03_BoF_Clasificacion.ipynb`
 
-```
-wavelet_reports/
-├── wavelet_features.csv         # ← Archivo principal para BoF
-├── wavelet_features_matrix.npy  # ← Matriz numpy para clustering
-├── channel_info.csv            # ← Información de canales
-├── wavelet_spectrogram.png     # ← Visualización CWT
-└── wavelet_energy_distribution.png # ← Distribución de energía
-```
+**Objetivo**: Implementar y optimizar el modelo Bag of Features + SVM.
 
-## Notas
+**Qué hace**:
+- Redimensiona los datos a formato BoF: (ensayos, canales, descriptores)
+- Construye un vocabulario visual mediante clustering K-means (MiniBatchKMeans)
+- Codifica cada ensayo en un histograma de "palabras visuales"
+- Realiza **Grid Search** para optimizar hiperparámetros:
+  - Número de clusters K: {50, 100, 150}
+  - Parámetro de regularización SVM C: {1.0, 10.0, 50.0}
+- Evalúa mediante **Validación Cruzada por Grupos (GroupKFold)** con 5 pliegues
+- Genera matriz de confusión y métricas de evaluación
 
-- El script procesa todos los archivos disponibles en ambos directorios
-- Los datos ya vienen epocados o se segmentan automáticamente si son continuos
-- Los resultados se guardan en directorios separados (`reports/` y `wavelet_reports/`)
-- Los directorios de salida se crean automáticamente si no existen
-- Las características wavelet están optimizadas para clustering K-means
+**Salidas** (en `results/bof_svm/`):
+- `best_params.json`: Mejores hiperparámetros encontrados
+- `grid_search_results.csv`: Resultados de todas las combinaciones
+- `confusion_matrix.npy`: Matriz de confusión final
+- `summary.txt`: Resumen de resultados
+
+**Tiempo estimado**: 10-20 minutos
+
+### 4. DeepConvNet (CNN) - `04_DeepConvNet_CNN.ipynb`
+
+**Objetivo**: Implementar y entrenar una arquitectura CNN profunda para clasificación.
+
+**Qué hace**:
+- Implementa arquitectura DeepConvNet adaptada de Schirrmeister et al. (2017)
+- Arquitectura: 4 bloques convolucionales + capas totalmente conectadas
+- Divide datos: 80% entrenamiento, 10% validación, 10% prueba
+- Entrena con optimizador Adam, Early Stopping
+- Evalúa con métricas de clasificación
+
+**Salidas** (en `results/deepconvnet/`):
+- `deepconvnet_baseline.pth`: Modelo entrenado guardado
+- `metrics.npy`: Métricas de evaluación
+- `summary.txt`: Resumen de resultados
+
+**Tiempo estimado**: 30-60 minutos (depende del hardware)
+
+## 📊 Resultados
+
+### Comparación de Modelos
+
+| Modelo | Accuracy | Precision | Recall | F1-Score |
+|--------|----------|-----------|--------|----------|
+| **BoF-SVM** (K=50, C=10.0) | **52.84%** | **52.37%** | **57.12%** | **0.5451** |
+| DeepConvNet | 47.16% | 47.07% | 47.16% | 0.4677 |
+
+### Visualizaciones Disponibles
+
+Las gráficas generadas están en `results/figures/`:
+- `confusion_matrix_bof_svm.pdf`: Matriz de confusión del modelo BoF-SVM
+- `metrics_comparison.pdf`: Comparación de métricas entre ambos modelos
+- `grid_search_heatmap.pdf`: Resultados del grid search de hiperparámetros
+
+### Artículo Científico
+
+El artículo completo en LaTeX está disponible en `articulo.md`, incluyendo:
+- Revisión de literatura
+- Metodología detallada
+- Resultados y análisis comparativo
+- Discusión y conclusiones
+
+## 🔧 Configuración y Parámetros
+
+### Parámetros Principales del Análisis
+
+- **Filtrado de frecuencia**: 8-30 Hz (bandas μ y β)
+- **Banda μ**: 10-12 Hz
+- **Banda β**: 18-26 Hz
+- **Duración de trial**: 9 segundos
+- **Canales EEG**: 64 (estándar 10-20)
+- **Sujetos**: 20 (S001-S020)
+- **Ensayos totales**: 880 (44 por sujeto, balanceado)
+
+### Parámetros del Modelo BoF-SVM
+
+- **Clusters K**: 50 (óptimo encontrado por grid search)
+- **SVM C**: 10.0 (óptimo encontrado por grid search)
+- **Kernel SVM**: RBF (radial)
+- **Validación**: GroupKFold con 5 pliegues
+- **Semilla aleatoria**: 42 (reproducibilidad)
+
+### Parámetros del Modelo DeepConvNet
+
+- **Arquitectura**: 4 bloques convolucionales
+- **Tasa de aprendizaje**: 0.001
+- **Batch size**: 16
+- **Épocas máximas**: 100 (con Early Stopping)
+- **División de datos**: 80/10/10 (train/val/test)
+
+## 📦 Dependencias Principales
+
+El proyecto utiliza las siguientes librerías (especificadas en `pyproject.toml`):
+
+- **Procesamiento de señales**: `mne>=1.5.0`, `scipy>=1.11.0`
+- **Wavelets**: `PyWavelets>=1.4.0`
+- **Machine Learning**: `scikit-learn>=1.3.0`
+- **Deep Learning**: `torch>=2.0.0` (para DeepConvNet)
+- **Análisis de datos**: `numpy>=1.24.0`, `pandas>=2.0.0`
+- **Visualización**: `matplotlib>=3.7.0`, `seaborn>=0.12.0`
+- **Utilidades**: `tqdm>=4.65.0` (barras de progreso)
+
+## ❓ Preguntas Frecuentes
+
+### ¿Puedo ejecutar los notebooks en cualquier orden?
+
+**No**. Los notebooks tienen dependencias:
+1. `01_EDA_Analysis.ipynb` debe ejecutarse primero
+2. `02_Wavelet_Analysis.ipynb` depende de los datos generados por el EDA
+3. `03_BoF_Clasificacion.ipynb` depende de las características wavelet
+4. `04_DeepConvNet_CNN.ipynb` puede ejecutarse independientemente (usa datos preprocesados)
+
+### ¿Qué pasa si ya existen archivos de salida?
+
+Los notebooks sobrescriben los archivos de salida. Si quieres conservar resultados anteriores, haz una copia antes de ejecutar.
+
+### ¿Cuánto tiempo toma ejecutar todo el pipeline?
+
+- EDA: ~5-10 minutos
+- Wavelets: ~15-30 minutos
+- BoF-SVM: ~10-20 minutos
+- DeepConvNet: ~30-60 minutos
+
+**Total estimado**: 1-2 horas (depende del hardware)
+
+### ¿Necesito GPU para ejecutar DeepConvNet?
+
+No es estrictamente necesario, pero acelerará el entrenamiento significativamente. El modelo puede entrenarse en CPU, pero tomará más tiempo.
+
+### ¿Cómo interpreto los resultados?
+
+- **Accuracy > 50%**: Mejor que el azar (clasificación binaria)
+- **F1-Score**: Equilibrio entre precisión y recall
+- **GroupKFold**: Evalúa generalización a nuevos sujetos (más conservador que validación estándar)
+
+## 📝 Notas Adicionales
+
+- Los datos están en formato **EEGLAB** (.set/.fdt)
+- Todos los procesos utilizan **semilla aleatoria fija (42)** para reproducibilidad
+- Los resultados se guardan en formato NumPy, CSV, JSON y PNG/PDF
+- El proyecto está optimizado para validación **inter-sujeto** (más realista para BCI)
+
+## 📄 Licencia y Referencias
+
+Este proyecto es parte de un estudio comparativo entre métodos clásicos y de deep learning para clasificación de señales EEG. Para más detalles, consulta el artículo en `articulo.md`.
+
+### Referencias Principales
+
+- Schirrmeister, R. T., et al. (2017). Deep learning with convolutional neural networks for EEG decoding and visualization. *Human Brain Mapping*, 38(11), 5391-5420.
+- Asghar, M. A., et al. (2019). EEG-Based Multi-Modal Emotion Recognition using Bag of Deep Features. *Sensors*, 19(23), 5218.
+
+## 🤝 Contribuciones
+
+Este es un proyecto de investigación académica. Para preguntas o sugerencias, consulta el artículo o la documentación en los notebooks.
+
+---
+
+**Última actualización**: Noviembre 2024  
+**Estado del proyecto**: ✅ Completado - Todos los análisis implementados y resultados disponibles
