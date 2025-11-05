@@ -67,9 +67,15 @@ except Exception as e:
 # 2. Comparación de métricas (ACTUALIZADO con nuevos valores DeepConvNet)
 print("\nGenerando comparación de métricas...")
 try:
-    # Cargar resultados BoF-SVM
-    with open(BOF_DIR / 'best_params.json', 'r') as f:
-        bof_results = json.load(f)
+    # Cargar resultados BoF-SVM desde grid_search_results.csv
+    grid_df = pd.read_csv(BOF_DIR / 'grid_search_results.csv')
+    best_row = grid_df.loc[grid_df['mean_f1'].idxmax()]
+    bof_results = {
+        'mean_accuracy': best_row['mean_accuracy'],
+        'mean_precision': best_row['mean_precision'],
+        'mean_recall': best_row['mean_recall'],
+        'mean_f1': best_row['mean_f1']
+    }
 
     # Cargar resultados DeepConvNet desde CSV
     cnn_df = pd.read_csv(CNN_DIR / 'deepconvnet_metrics.csv')
