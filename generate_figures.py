@@ -196,4 +196,4 @@ try:
 except Exception as e:
     print(f"  ✗ Error: {e}")
 
-print(f"\n✅ Todas las gráficas generadas en: {FIGS_DIR}")
+print(f"\n Todas las gráficas generadas en: {FIGS_DIR}")
