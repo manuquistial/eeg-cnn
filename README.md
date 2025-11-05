@@ -123,7 +123,7 @@ jupyter notebook
 jupyter nbconvert --to notebook --execute 01_EDA_Analysis.ipynb
 jupyter nbconvert --to notebook --execute 02_Wavelet_Analysis.ipynb
 jupyter nbconvert --to notebook --execute 03_BoF_Clasificacion.ipynb
-jupyter nbconvert --to notebook --execute 05_DeepConvNet_CNN.ipynb
+jupyter nbconvert --to notebook --execute 04_DeepConvNet_CNN.ipynb
 ```
 
 ## 📚 Descripción Detallada de los Notebooks
@@ -190,7 +190,7 @@ jupyter nbconvert --to notebook --execute 05_DeepConvNet_CNN.ipynb
 
 **Tiempo estimado**: 10-20 minutos
 
-### 4. DeepConvNet (CNN) - `05_DeepConvNet_CNN.ipynb`
+### 4. DeepConvNet (CNN) - `04_DeepConvNet_CNN.ipynb`
 
 **Objetivo**: Implementar y entrenar una arquitectura CNN profunda para clasificación.
 
@@ -280,7 +280,7 @@ El proyecto utiliza las siguientes librerías (especificadas en `pyproject.toml`
 1. `01_EDA_Analysis.ipynb` debe ejecutarse primero
 2. `02_Wavelet_Analysis.ipynb` depende de los datos generados por el EDA
 3. `03_BoF_Clasificacion.ipynb` depende de las características wavelet
-4. `05_DeepConvNet_CNN.ipynb` puede ejecutarse independientemente (usa datos preprocesados)
+4. `04_DeepConvNet_CNN.ipynb` puede ejecutarse independientemente (usa datos preprocesados)
 
 ### ¿Qué pasa si ya existen archivos de salida?
 
