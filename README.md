@@ -14,9 +14,9 @@ El objetivo principal es clasificar señales EEG en dos clases: **imaginación d
 ### Resultados Principales
 
 - **BoF-SVM**: Accuracy: 52.84%, F1-Score: 0.5451
-- **DeepConvNet**: Accuracy: 47.16%, F1-Score: 0.4677
+- **DeepConvNet**: Accuracy: 67.42%, F1-Score: 0.6742
 
-El modelo BoF-SVM demostró un mejor desempeño en todas las métricas evaluadas.
+El modelo DeepConvNet demostró un mejor desempeño en todas las métricas evaluadas, superando al modelo BoF-SVM por aproximadamente 15 puntos porcentuales en accuracy.
 
 ## 🏗️ Estructura del Proyecto
 
@@ -26,7 +26,7 @@ datos_BCI/
 │   ├── 01_EDA_Analysis.ipynb           # Análisis exploratorio (PSD, correlación)
 │   ├── 02_Wavelet_Analysis.ipynb       # Extracción de características wavelet
 │   ├── 03_BoF_Clasificacion.ipynb      # Modelo Bag of Features + SVM
-│   └── 05_DeepConvNet_CNN.ipynb        # Modelo DeepConvNet (CNN)
+│   └── 04_DeepConvNet_CNN.ipynb        # Modelo DeepConvNet (CNN)
 │
 ├── Datos de Entrada
 │   ├── left_imag/                      # 20 archivos .set/.fdt (mano izquierda)
@@ -57,7 +57,7 @@ datos_BCI/
 
 ### Requisitos Previos
 
-- Python 3.8 o superior
+- Python 3.11 o superior
 - pip (gestor de paquetes de Python)
 - Jupyter Notebook o Jupyter Lab
 
@@ -79,18 +79,22 @@ source venv/bin/activate  # En macOS/Linux
 #### Opción 2: Crear un entorno virtual nuevo
 
 ```bash
-# Crear entorno virtual
-python3 -m venv venv
+# Crear entorno virtual con Python 3.11
+python3.11 -m venv venv
 source venv/bin/activate  # macOS/Linux
 # O: venv\Scripts\activate  # Windows
 
-# Instalar dependencias
+# Actualizar pip
+pip install --upgrade pip
+
+# Instalar dependencias desde pyproject.toml
 pip install -e .
 
-# O instalar manualmente:
-pip install mne>=1.5.0 PyWavelets>=1.4.0 scikit-learn>=1.3.0 \
-            matplotlib>=3.7.0 pandas>=2.0.0 numpy>=1.24.0 \
-            scipy>=1.11.0 tqdm>=4.65.0 torch>=2.0.0
+# Las dependencias se instalarán automáticamente según pyproject.toml:
+# - mne>=1.10.0, scipy>=1.16.0, numpy>=1.26.0
+# - matplotlib>=3.10.0, seaborn>=0.13.0, pandas>=2.3.0
+# - PyWavelets>=1.9.0, scikit-learn>=1.7.0
+# - torch>=2.2.0, jupyter>=1.1.0, tqdm>=4.67.0
 ```
 
 #### Opción 3: Instalación desde notebooks
@@ -113,7 +117,7 @@ jupyter notebook
 #    a) 01_EDA_Analysis.ipynb
 #    b) 02_Wavelet_Analysis.ipynb
 #    c) 03_BoF_Clasificacion.ipynb
-#    d) 05_DeepConvNet_CNN.ipynb
+#    d) 04_DeepConvNet_CNN.ipynb
 ```
 
 #### Ejecución Automatizada (sin interfaz gráfica)
@@ -214,8 +218,8 @@ jupyter nbconvert --to notebook --execute 04_DeepConvNet_CNN.ipynb
 
 | Modelo | Accuracy | Precision | Recall | F1-Score |
 |--------|----------|-----------|--------|----------|
-| **BoF-SVM** (K=50, C=10.0) | **52.84%** | **52.37%** | **57.12%** | **0.5451** |
-| DeepConvNet | 47.16% | 47.07% | 47.16% | 0.4677 |
+| BoF-SVM (K=50, C=10.0) | 52.84% | 52.37% | 57.12% | 0.5451 |
+| **DeepConvNet** | **67.42%** | **67.42%** | **67.42%** | **0.6742** |
 
 ### Visualizaciones Disponibles
 
@@ -264,13 +268,16 @@ El artículo completo en LaTeX está disponible en `articulo.md`, incluyendo:
 
 El proyecto utiliza las siguientes librerías (especificadas en `pyproject.toml`):
 
-- **Procesamiento de señales**: `mne>=1.5.0`, `scipy>=1.11.0`
-- **Wavelets**: `PyWavelets>=1.4.0`
-- **Machine Learning**: `scikit-learn>=1.3.0`
-- **Deep Learning**: `torch>=2.0.0` (para DeepConvNet)
-- **Análisis de datos**: `numpy>=1.24.0`, `pandas>=2.0.0`
-- **Visualización**: `matplotlib>=3.7.0`, `seaborn>=0.12.0`
-- **Utilidades**: `tqdm>=4.65.0` (barras de progreso)
+- **Procesamiento de señales**: `mne>=1.10.0`, `scipy>=1.16.0`
+- **Wavelets**: `PyWavelets>=1.9.0`
+- **Machine Learning**: `scikit-learn>=1.7.0`
+- **Deep Learning**: `torch>=2.2.0` (para DeepConvNet)
+- **Análisis de datos**: `numpy>=1.26.0`, `pandas>=2.3.0`
+- **Visualización**: `matplotlib>=3.10.0`, `seaborn>=0.13.0`
+- **Utilidades**: `tqdm>=4.67.0`, `joblib>=1.5.0` (barras de progreso)
+- **Jupyter**: `jupyter>=1.1.0`, `ipykernel>=6.0.0`
+
+**Nota**: Todas las dependencias están definidas en `pyproject.toml`. Se recomienda usar `pip install -e .` para instalar todas las dependencias de forma automática.
 
 ## ❓ Preguntas Frecuentes
 
