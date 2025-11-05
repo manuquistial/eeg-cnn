@@ -42,20 +42,13 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.pdf
-*.csv
-*.txt
+
 eda_reports/
 eda_reports_complete/
 left_imag/eda_reports/
 right_imag/eda_reports/
 reports/
-shared_data/
-deepconvnet_results
+
 
 # Python packaging
 build/

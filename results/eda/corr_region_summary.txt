@@ -1,0 +1,12 @@
+=== Resumen de correlaciones por región ===
+Global mean r: 0.002
+F-C: mean r = -0.046  (n_a=26, n_b=14)
+FC-C: mean r = 0.155  (n_a=7, n_b=14)
+C-CP: mean r = 0.318  (n_a=14, n_b=7)
+C-P: mean r = -0.016  (n_a=14, n_b=14)
+F-P: mean r = -0.364  (n_a=26, n_b=14)
+P-O: mean r = 0.566  (n_a=14, n_b=3)
+F-F: mean r = 0.287  (n=26)
+C-C: mean r = 0.305  (n=14)
+P-P: mean r = 0.539  (n=14)
+O-O: mean r = 0.867  (n=3)
